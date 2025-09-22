@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Validador de Cédula Dominicana</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 30px;
+      text-align: center;
+    }
+    h2 {
+      color: #333;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 250px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    p {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .correcta { color: green; }
+    .incorrecta { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Validador de Cédula Dominicana</h2>
+  <input type="text" id="cedula" placeholder="Ingresa tu cédula (11 dígitos)">
+  <br>
+  <button onclick="validar()">Validar</button>
+  <p id="resultado"></p>
+
+  <script>
+    function validarCedulaDominicana(cedula) {
+      // Quitar espacios y guiones
+      cedula = cedula.replace(/[\s-]/g, "");
+
+      // Validar longitud y solo números
+      if (!/^\d{11}$/.test(cedula)) {
+        return { valido: false, mensaje: "❌ CÉDULA ES INCORRECTA (debe tener 11 dígitos)" };
+      }
+
+      // Algoritmo de Luhn
+      let suma = 0;
+      let alternar = false;
+
+      for (let i = cedula.length - 1; i >= 0; i--) {
+        let digito = parseInt(cedula.charAt(i), 10);
+
+        if (alternar) {
+          digito *= 2;
+          if (digito > 9) digito -= 9;
+        }
+
+        suma += digito;
+        alternar = !alternar;
+      }
+
+      if (suma % 10 === 0) {
+        return { valido: true, mensaje: "✅ CÉDULA ES CORRECTA" };
+      } else {
+        return { valido: false, mensaje: "❌ CÉDULA ES INCORRECTA" };
+      }
+    }
+
+    function validar() {
+      const cedula = document.getElementById("cedula").value;
+      const resultado = validarCedulaDominicana(cedula);
+
+      const salida = document.getElementById("resultado");
+      salida.textContent = resultado.mensaje;
+      salida.className = resultado.valido ? "correcta" : "incorrecta";
+    }
+  </script>
+</body>
+</html>
